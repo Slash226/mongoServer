@@ -22,7 +22,7 @@
 <script src="/axios.js"></script>
 <script>
     console.log(axios)
-    axios.get('http://localhost:1111/api')
+    axios.get('http://kmcome.cn:1111/api')
         .then(function(response) {
             console.log(response.data);
             let h2 = document.querySelector('h2')
@@ -51,7 +51,7 @@
 
         // Ajax
         var request = new XMLHttpRequest();
-        request.open("POST", "http://localhost:1111/upload");
+        request.open("POST", "http://kmcome.cn:1111/upload");
         request.send(fd);
         request.onreadystatechange = function() {
             if (request.readyState === 4 & request.status === 200) {
@@ -65,7 +65,7 @@
     let getList = document.querySelector('.getList')
     console.log(getList)
     getList.onclick = function() {
-        axios.get('http://localhost:1111/getImglist')
+        axios.get('http://kmcome.cn:1111/getImglist')
             .then(function(response) {
                 console.log(response.data);
             })
