@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 const path = require('path')
 const cors = require('cors');
 const app = express()
-let upload = require('./src/upload')
+const upload = require('./src/upload')
+const con = require('./src/consumer')
 // let getImglist = require('./src/getImgList')
 app.use(cors()); // 解决跨域问题
 
@@ -28,6 +29,8 @@ app.get('/api',(req,res)=>{
 
 // 上传图片
 app.use('/upload', upload.router);
+// 获取顾客信息
+app.use('/consumerList',con.router);
 
 // 获取图片列表
 app.use('/getImglist', (req,res)=>{
