@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router(); // 输出一个路由中间件
 const fs = require('fs');
 const json2xls = require('json2xls'); //生成excel
+const MD5 = require('md5-node');
 
 // 2、创建 schema
 let Schema = mongoose.Schema;
@@ -18,9 +19,29 @@ let consumerInfo = new Schema({
     status: String
 });
 
+// 监控历史操作表
+let processInfo = new Schema({
+    doneDate: String,
+    oldInfo: Object,
+    newInfo: Object
+});
+
+
 // 3、 创建Model 对象
 let consumer = mongoose.model("consumer", consumerInfo)
+let kmPorcess = mongoose.model("kmPorcess", processInfo)
 console.log('执行')
+router.all('*', function (req, res, next) {
+    if (req.url == '/kmLogin') {
+        next();
+    } else {
+        if(req.headers.authorization=='f84d78f03d6c375a3558c02888803f148ddcff3a80f4189ca1c9d4d902c3c909') {
+            next();
+        } else {
+            res.send({code:401,msg:'未登入'})
+        }
+    }
+})
 
 router.get('/', function (req, res, next) {
     let query = req.query
@@ -90,7 +111,7 @@ router.get('/exportExcel', function (req, res, next) {
                             '户外帐篷': ele.gift1,
                             '拉杆箱': ele.gift2,
                             '溜娃神器': ele.gift3,
-                            '状态': ele.status==1?'未处理':ele.status==2?'处理中':ele.status==3?'已处理':'',
+                            '状态': ele.status == 1 ? '未处理' : ele.status == 2 ? '处理中' : ele.status == 3 ? '已处理' : '',
                             '备注': ele.comment
                         }
                         jsonArray.push(temp)
@@ -106,16 +127,16 @@ router.get('/exportExcel', function (req, res, next) {
                         '户外帐篷': ele.gift1,
                         '拉杆箱': ele.gift2,
                         '溜娃神器': ele.gift3,
-                        '状态': ele.status==1?'未处理':ele.status==2?'处理中':ele.status==3?'已处理':'',
+                        '状态': ele.status == 1 ? '未处理' : ele.status == 2 ? '处理中' : ele.status == 3 ? '已处理' : '',
                         '备注': ele.comment
                     }
                     jsonArray.push(temp)
                 })
             }
             let xls = json2xls(jsonArray);
-            let date = (new Date().getMonth()+1) + '-' + new Date().getDate();
-            fs.writeFileSync('static/excel/km'+date+'.xlsx', xls, 'binary');
-            res.send({url:'http://127.0.0.1:1111/'+'km'+date+'.xlsx'}); // 本地环境
+            let date = (new Date().getMonth() + 1) + '-' + new Date().getDate();
+            fs.writeFileSync('static/excel/km' + date + '.xlsx', xls, 'binary');
+            res.send({ url: 'http://127.0.0.1:1111/' + 'km' + date + '.xlsx' }); // 本地环境
             // res.send({url:'http://suezp.cn:1111/'+'km'+date+'.xlsx'});  //线上环境
             next();
         } else {
@@ -162,6 +183,21 @@ router.post('/addConsumer', function (req, res, next) {
     })
     next();
 })
+
+// 登入
+
+// 账号km1234   密码 8888888
+router.post('/kmLogin', function (req, res, next) {
+    let query = req.body;
+    if (query.username === 'km1234' && query.password === MD5('88888888')) {
+        let token = MD5(query.username) + query.password;
+        res.send({ code: 200, token: token })
+    } else {
+        res.send({ code: 403, msg: '用户名或密码错误!' })
+    }
+    next();
+})
+
 
 
 
