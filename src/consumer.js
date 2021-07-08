@@ -90,7 +90,7 @@ router.get('/exportExcel', function (req, res, next) {
                             '户外帐篷': ele.gift1,
                             '拉杆箱': ele.gift2,
                             '溜娃神器': ele.gift3,
-                            '状态': ele.status,
+                            '状态': ele.status==1?'未处理':ele.status==2?'处理中':ele.status==3?'已处理':'',
                             '备注': ele.comment
                         }
                         jsonArray.push(temp)
@@ -106,7 +106,7 @@ router.get('/exportExcel', function (req, res, next) {
                         '户外帐篷': ele.gift1,
                         '拉杆箱': ele.gift2,
                         '溜娃神器': ele.gift3,
-                        '状态': ele.status,
+                        '状态': ele.status==1?'未处理':ele.status==2?'处理中':ele.status==3?'已处理':'',
                         '备注': ele.comment
                     }
                     jsonArray.push(temp)
