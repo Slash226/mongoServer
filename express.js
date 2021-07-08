@@ -16,6 +16,7 @@ mongoose.connection.once("open", () => {
 })
 
 app.use(express.static(path.join(__dirname,'static/images')))
+app.use(express.static(path.join(__dirname,'static/excel')))
 app.use(express.static(path.join(__dirname,'src')))
 app.use(express.static(path.join(__dirname,'pages')))
 // app.use(express.static(path.join(__dirname, 'static')))
