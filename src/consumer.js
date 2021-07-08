@@ -51,7 +51,7 @@ router.get('/', function (req, res, next) {
                 })
                 pages.total = list.length;
             } else {
-                list = docs.reverse();
+                list = docs;
             }
             list = list.splice((query.page - 1) * query.pageNum, query.pageNum);
             res.send({ list, pages })
@@ -97,7 +97,7 @@ router.get('/exportExcel', function (req, res, next) {
                     }
                 })
             } else {
-                docs.reverse().forEach(ele => {
+                docs.forEach(ele => {
                     let temp = {
                         '日期': ele.date,
                         '姓名': ele.name,
@@ -115,8 +115,8 @@ router.get('/exportExcel', function (req, res, next) {
             let xls = json2xls(jsonArray);
             let date = (new Date().getMonth()+1) + '-' + new Date().getDate();
             fs.writeFileSync('static/excel/km'+date+'.xlsx', xls, 'binary');
-            // res.send({url:'http://127.0.0.1:1111/'+'km'+date+'.xlsx'}); // 本地环境
-            res.send({url:'http://suezp.cn:1111/'+'km'+date+'.xlsx'});  //线上环境
+            res.send({url:'http://127.0.0.1:1111/'+'km'+date+'.xlsx'}); // 本地环境
+            // res.send({url:'http://suezp.cn:1111/'+'km'+date+'.xlsx'});  //线上环境
             next();
         } else {
             throw err
