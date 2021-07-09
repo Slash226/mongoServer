@@ -68,12 +68,13 @@ router.get('/', function (req, res, next) {
                     // let str = ele.name + '' + ele.phone + '' + ele.comment + '' + ele.principal;
                     let str = ele.comment;
                     if (!(str.indexOf(query.keyWord) === -1)) {
-                        list.push(ele)
+                        // list.push(ele);
+                        list.unshift(ele);  //倒序
                     }
                 })
                 pages.total = list.length;
             } else {
-                list = docs;
+                list = docs.reverse();
             }
             list = list.splice((query.page - 1) * query.pageNum, query.pageNum);
             res.send({ list, pages })
@@ -174,7 +175,6 @@ router.post('/addConsumer', function (req, res, next) {
     console.log(query.phone);
     consumer.find({phone:query.phone}, {}, (err, docs) => {
         if(docs.length === 0) {
-            console.log('执行')
             consumer.create([query], (err) => {
                 if (!err) {
                     console.log('添加成功')
