@@ -30,15 +30,21 @@ let processInfo = new Schema({
 // 3、 创建Model 对象
 let consumer = mongoose.model("consumer", consumerInfo)
 let kmPorcess = mongoose.model("kmPorcess", processInfo)
-console.log('执行')
+const token = 'f84d78f03d6c375a3558c02888803f148ddcff3a80f4189ca1c9d4d902c3c909';
+
 router.all('*', function (req, res, next) {
     if (req.url == '/kmLogin') {
         next();
     } else {
-        if(req.headers.authorization=='f84d78f03d6c375a3558c02888803f148ddcff3a80f4189ca1c9d4d902c3c909') {
+        let nowDate = new Date();
+        let year = nowDate.getFullYear();
+        let month = nowDate.getMonth() * 1 + 1;
+        let day = nowDate.getDate();
+        let kmToken = token + year + month + day;
+        if (req.headers.authorization == kmToken) {
             next();
         } else {
-            res.send({code:401,msg:'未登入'})
+            res.send({ code: 401, msg: '未登入' })
         }
     }
 })
@@ -139,7 +145,7 @@ router.get('/exportExcel', function (req, res, next) {
             let date = (new Date().getMonth() + 1) + '-' + new Date().getDate();
             fs.writeFileSync('static/excel/km' + date + '.xlsx', xls, 'binary');
             //  res.send({ url: 'http://127.0.0.1:1111/' + 'km' + date + '.xlsx' }); // 本地环境
-            res.send({url:'http://suezp.cn:1111/'+'km'+date+'.xlsx'});  //线上环境
+            res.send({ url: 'http://suezp.cn:1111/' + 'km' + date + '.xlsx' });  //线上环境
             next();
         } else {
             throw err
@@ -173,8 +179,8 @@ router.post('/editInfo', function (req, res, next) {
 router.post('/addConsumer', function (req, res, next) {
     let query = req.body;
     console.log(query.phone);
-    consumer.find({phone:query.phone}, {}, (err, docs) => {
-        if(docs.length === 0) {
+    consumer.find({ phone: query.phone }, {}, (err, docs) => {
+        if (docs.length === 0) {
             consumer.create([query], (err) => {
                 if (!err) {
                     console.log('添加成功')
@@ -187,9 +193,9 @@ router.post('/addConsumer', function (req, res, next) {
                 }
             })
         } else {
-            res.send({ code: 302, msg:'已有改手机号的用户数据' });
+            res.send({ code: 302, msg: '已有改手机号的用户数据' });
         }
-     })
+    })
 })
 
 // 登入
@@ -199,7 +205,12 @@ router.post('/kmLogin', function (req, res, next) {
     let query = req.body;
     if (query.username === 'km1234' && query.password === MD5('88888888')) {
         let token = MD5(query.username) + query.password;
-        res.send({ code: 200, token: token })
+        let nowDate = new Date();
+        let year = nowDate.getFullYear();
+        let month = nowDate.getMonth() * 1 + 1;
+        let day = nowDate.getDate();
+        let kmToken = token + year + month + day;
+        res.send({ code: 200, token: kmToken })
     } else {
         res.send({ code: 403, msg: '用户名或密码错误!' })
     }
