@@ -43,6 +43,7 @@ router.all('*', function (req, res, next) {
     }
 })
 
+// 查询列表
 router.get('/', function (req, res, next) {
     let query = req.query
     // pages->  page,pageNum,total
@@ -169,19 +170,26 @@ router.post('/editInfo', function (req, res, next) {
 
 // 新增用户信息
 router.post('/addConsumer', function (req, res, next) {
-    console.log(req.body);
     let query = req.body;
-    consumer.create([query], (err) => {
-        if (!err) {
-            console.log('添加成功')
-            consumer.find({ ...query }, {}, (err, docs) => {
-                res.send({ docs, code: 200 })
+    console.log(query.phone);
+    consumer.find({phone:query.phone}, {}, (err, docs) => {
+        if(docs.length === 0) {
+            console.log('执行')
+            consumer.create([query], (err) => {
+                if (!err) {
+                    console.log('添加成功')
+                    consumer.find({ ...query }, {}, (err, docs) => {
+                        res.send({ docs, code: 200 })
+                        return
+                    })
+                } else {
+                    throw err;
+                }
             })
         } else {
-            throw err;
+            res.send({ code: 302, msg:'已有改手机号的用户数据' });
         }
-    })
-    next();
+     })
 })
 
 // 登入
