@@ -65,8 +65,8 @@ router.get('/', function (req, res, next) {
             let list = [];
             if (query.keyWord.trim() !== '') {
                 docs.forEach((ele) => {
-                    // let str = ele.name + '' + ele.phone + '' + ele.comment + '' + ele.principal;
-                    let str = ele.comment;
+                    let str = ele.name + '' + ele.phone + '' + ele.comment + '' + ele.principal;
+                    // let str = ele.comment;
                     if (!(str.indexOf(query.keyWord) === -1)) {
                         // list.push(ele);
                         list.unshift(ele);  //倒序
