@@ -5,7 +5,8 @@ const path = require('path')
 const cors = require('cors');
 const app = express()
 const upload = require('./src/upload')
-const con = require('./src/consumer')
+const con = require('./src/kmSystem/consumer')
+const singlePart = require('./src/kmSystem/singlePart')
 // let getImglist = require('./src/getImgList')
 app.use(cors()); // 解决跨域问题
 
@@ -30,8 +31,10 @@ app.get('/api',(req,res)=>{
 
 // 上传图片
 app.use('/upload', upload.router);
-// 获取顾客信息
+// 七周年顾客信息路由
 app.use('/consumerList',con.router);
+// 单套系顾客信息路由
+app.use('/singlePart',singlePart.router);
 
 // 获取图片列表
 app.use('/getImglist', (req,res)=>{

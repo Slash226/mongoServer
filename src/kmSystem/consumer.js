@@ -1,3 +1,4 @@
+// 七周年用户信息
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router(); // 输出一个路由中间件
@@ -180,7 +181,7 @@ router.post('/addConsumer', function (req, res, next) {
     let query = req.body;
     console.log(query.phone);
     consumer.find({ phone: query.phone }, {}, (err, docs) => {
-        if (docs.length === 0) {
+        if (docs.length === 0 || query.phone.trim() == '') {
             consumer.create([query], (err) => {
                 if (!err) {
                     console.log('添加成功')
